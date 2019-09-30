@@ -1,17 +1,12 @@
 from edx_io import edx_io
-import math
 with edx_io() as io:
-	arr, n = [], io.next_int()
-	k=0
-	for i in io.all_tokens():
-		arr.append(int(i))
-
+	arr, n, k = [], io.next_int(), 0
 	for i in range(n):
-		j=i+1
-		while j>=0 and j<n:
-			if arr[i]>arr[j]:
+		arr.append(io.next_int())
+		j=i-1
+		while j>=0:
+			if arr[j]>arr[i]:
 				k+=1
-			j+=1
-
+			j-=1
 	io.write(k)
-	print(k)
+	# print(k)

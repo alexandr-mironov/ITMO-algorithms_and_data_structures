@@ -1,3 +1,6 @@
 /input.txt
-/output.txt
+*/output.txt
+*/__pycache__/
 /__pycache__
+/output.txt
+.DS_Store

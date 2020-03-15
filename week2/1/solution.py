@@ -26,12 +26,15 @@ with edx_io() as io:
 		i=len(c)
 		if i == 1:
 			return c
-		h=i//2
+		h=math.ceil(i/2)
+		print(h)
 		al,ar=merge_sort(a,l,l+h),merge_sort(a,l+h,r)
-		io.writeln("{} {} {} {}".format(l+1,r,a[h-1],a[h]))
-		# print(l+1,r,a[l],a[r-1])
-		return merge(al,ar,l,r-1)
-	arr=merge_sort(arr,0,len(arr))
+		print(al,ar)
+		# if len(al)>1 or len(ar)>1:
+		io.writeln("{} {} {} {}".format(l+1,r,al[0],ar[h-1]))
+		# print(l+1,r+1,al[0],ar[len(ar)-1])
+		return merge(al,ar,l,r)
+	arr=merge_sort(arr,0,n)
 
 	io.writeln(arr)
-	print(arr)
+	# print(arr)

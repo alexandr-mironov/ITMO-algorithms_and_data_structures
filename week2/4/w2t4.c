@@ -17,9 +17,6 @@ bool read(FILE *f)
     int a;
 
     if(!f) {
-#ifdef DEBUG
-        printf("Invalid input file, error %d", errno);
-#endif
         return false;
     }
 
@@ -30,18 +27,12 @@ bool read(FILE *f)
     contents = malloc(sizeof(char) * fsize + 1);
 
     if(!contents) {
-#ifdef DEBUG
-        printf("Unable to allocate temporary memory for input file contents, error %d", errno);
-#endif
         return false;
     }
 
     contents[fsize] = 0;
 
     if(fread(contents, 1, fsize, f) != fsize) {
-#ifdef DEBUG
-        printf("Unable to read input file into temporary memory, error %d", errno);
-#endif
         return false;
     }
 
@@ -56,9 +47,6 @@ bool read(FILE *f)
     in_lines = malloc(sizeof(char*) * in_lines_cnt);
 
     if(!in_lines) {
-#ifdef DEBUG
-        printf("Unable to allocate memory for input lines array, errno %d", errno);
-#endif
         return false;
     }
 
@@ -74,9 +62,6 @@ bool read(FILE *f)
 
     while(tmp) {
         if(a == in_lines_cnt) {
-#ifdef DEBUG
-            printf("Tokenized lines count is more than readed from file");
-#endif
             return false;
         }
 
@@ -102,34 +87,58 @@ void swap(int *a, int *b)
     *b = t;
 }
 
-int partition(int *arr, int low, int high)
-{
-    int i = (low - 1);
+//int partition(int *arr, int low, int high)
+//{
+//    int i = (low - 1);
+//
+//    for(int j = low; j <= high - 1; j++) {
+//        if(arr[j] < arr[high]) {
+//            i++;
+//            swap(&arr[i], &arr[j]);
+//        }
+//    }
+//
+//    swap(&arr[i + 1], &arr[high]);
+//
+//    return i + 1;
+//}
 
-    for(int j = low; j <= high - 1; j++) {
-        if(arr[j] < arr[high]) {
-            i++;
-            swap(&arr[i], &arr[j]);
-        }
+int partition(int *mas, int l, int r) {
+    if (l!=r)
+        swap(&mas[l + rand() % (r - l)], &mas[r]);
+    int x = mas[r];
+    int i = l-1;
+    for (int j = l; j <= r-1; j++) {
+        if (mas[j] <= x)
+            swap(&mas[++i],&mas[j]);
     }
-
-    swap(&arr[i + 1], &arr[high]);
-
-    return i + 1;
+    return i;
 }
 
-void quick_sort(int *arr, int low, int high)
-{
-    if(low < high) {
-        int mid = partition(arr, low, high);
-
-        if(intervs[1] - 1 <= mid - 1)
-            quick_sort(arr, low, mid - 1);
-
-        if(intervs[2] - 1 >= mid + 1)
-            quick_sort(arr, mid + 1, high);
+int nth(int mas, int n) {
+    int l = 0, r = mas.size() - 1;
+    for(;;) {
+        int pos = partition(mas,l,r);
+        if (pos < n)
+            l = pos + 1;
+        else if (pos > n)
+            r = pos - 1;
+        else return mas[n];
     }
 }
+
+//void quick_sort(int *arr, int low, int high)
+//{
+//    if(low < high) {
+//        int mid = partition(arr, low, high);
+//
+//        if(intervs[1] - 1 <= mid - 1)
+//            quick_sort(arr, low, mid - 1);
+//
+//        if(intervs[2] - 1 >= mid + 1)
+//            quick_sort(arr, mid + 1, high);
+//    }
+//}
 
 bool fill_out()
 {
@@ -139,9 +148,6 @@ bool fill_out()
     intervs = malloc(sizeof(int) * 3);
 
     if(!intervs) {
-#ifdef DEBUG
-        printf("Unable to allocate memory for the intervals array, error %d", errno);
-#endif
         return false;
     }
 
@@ -157,9 +163,6 @@ bool fill_out()
     tmp = malloc(sizeof(int) * 5);
 
     if(!tmp) {
-#ifdef DEBUG
-        printf("Unable to allocate memory for the \"tmp\" array, error %d", errno);
-#endif
         return false;
     }
 
@@ -175,9 +178,6 @@ bool fill_out()
     arr_a = malloc(sizeof(int) * intervs[0]);
 
     if(!arr_a) {
-#ifdef DEBUG
-        printf("Unable to allocate memory for the \"a\" array, error %d", errno);
-#endif
         return false;
     }
 
@@ -188,28 +188,23 @@ bool fill_out()
         arr_a[a] = tmp[0] * arr_a[a - 2] + tmp[1] * arr_a[a - 1] + tmp[2];
     }
 
-    quick_sort(arr_a, 0, intervs[0] - 1);
+
+    //quick_sort(arr_a, 0, intervs[0] - 1);
 
     for(a = 0; a < intervs[0]; a++) {
-        printf("%d\n", arr_a[a]);
+        printf("%d\n", nth(arr_a, a));
     }
 
     out_lines_cnt = 1;
     out_lines = malloc(sizeof(char*));
 
     if(out_lines == NULL) {
-#ifdef DEBUG
-        printf("Unable to allocate memory for out_lines, error %d", errno);
-#endif
         return false;
     }
 
     out_lines[0] = malloc(sizeof(char) * 24);
 
     if(!out_lines[0]) {
-#ifdef DEBUG
-        printf("Unable to allocate memory for one of the output lines, error %d", errno);
-#endif
         return false;
     }
 
@@ -221,9 +216,6 @@ bool write(FILE *f)
     int i, size = intervs[2] - intervs[1] + 1, written = 0;
 
     if(!f) {
-#ifdef DEBUG
-        printf("Invalid output file, error %d", errno);
-#endif
         return false;
     }
 
@@ -246,9 +238,6 @@ bool write(FILE *f)
         || fputc('\n', f) == EOF
 #endif
     ) {
-#ifdef DEBUG
-        printf("Unable to write output line to file, error %d", errno);
-#endif
         return false;
     }
 
